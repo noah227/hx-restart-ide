@@ -1,6 +1,6 @@
 {
 	"id": "noahyoung-hx-restart-ide",
-	"name": "noahyoung-hx-restart-ide",
+	"name": "hx-restart-ide",
 	"description": "一款单纯的IDE重启插件",
 	"displayName": "IDE重启",
 	"version": "1.0.0",
