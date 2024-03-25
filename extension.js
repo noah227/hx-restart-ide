@@ -20,8 +20,6 @@ const needPrompt = () => {
 //该方法将在插件激活的时候调用
 function activate(context) {
 	let disposable = hx.commands.registerCommand('extension.restartIde', () => {
-		console.log(hx.env.appData)
-		return
 		const action = () => {
 			// 销毁进程 
 			exec("taskkill /f /im hbuilderx.exe", (err, stdout, stderr) => {
