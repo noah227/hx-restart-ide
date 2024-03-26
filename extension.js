@@ -27,8 +27,13 @@ function activate(context) {
 				else {
 					const appRoot = hx.env.appRoot
 					// 重启进程
-					exec(`hbuilderx.exe`, {cwd: appRoot}, (err, stdout, stderr) => {
-						if(err) hx.window.showErrorMessage(err.message)
+					exec(`hbuilderx.exe`, {cwd: appRoot, encoding: "utf8"}, (err, stdout, stderr) => {
+						if(err) { 
+							// const fs =require("fs")
+							// const path = require("path")
+							// fs.writeFileSync(path.resolve(__dirname, ".log"), err.message, {encoding: "utf8"})
+							exec(`mshta vbscript:msgbox("HBuilderX重启失败，请手动启动",64,"提示")(window.close)`)
+						}
 					})
 				}
 			})
