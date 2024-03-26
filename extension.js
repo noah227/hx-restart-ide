@@ -32,7 +32,7 @@ function activate(context) {
 							// const fs =require("fs")
 							// const path = require("path")
 							// fs.writeFileSync(path.resolve(__dirname, ".log"), err.message, {encoding: "utf8"})
-							exec(`mshta vbscript:msgbox("HBuilderX重启失败，请手动启动",64,"提示")(window.close)`)
+							exec(`mshta vbscript:msgbox("HBuilderX重启失败，请手动启动",48,"提示")(window.close)`)
 						}
 					})
 				}
