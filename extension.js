@@ -21,8 +21,20 @@ const needPrompt = () => {
 function activate(context) {
 	let disposable = hx.commands.registerCommand('extension.restartIde', () => {
 		const action = () => {
+			let cmd = ""
+			switch(process.platform) {
+				case "win32":
+					cmd = "taskkill /f /im hbuilderx.exe"
+					break
+				case "linux":
+					cmd = "pkill -15 hbuilderx"
+					break
+				case "darwin":
+					cmd = "pkill -15 hbuilderx"
+					break
+			}
 			// 销毁进程 
-			exec("taskkill /f /im hbuilderx.exe", (err, stdout, stderr) => {
+			exec(cmd, (err, stdout, stderr) => {
 				if (err) hx.window.showErrorMessage(err.message)
 				else {
 					const appRoot = hx.env.appRoot
@@ -32,6 +44,7 @@ function activate(context) {
 							// const fs =require("fs")
 							// const path = require("path")
 							// fs.writeFileSync(path.resolve(__dirname, ".log"), err.message, {encoding: "utf8"})
+							// 使用了mshta，所以这里只支持了win
 							exec(`mshta vbscript:msgbox("HBuilderX重启失败，请手动启动",48,"提示")(window.close)`)
 						}
 					})
