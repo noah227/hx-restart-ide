@@ -1,7 +1,9 @@
 var hx = require("hbuilderx");
 const {
-	exec
-} = require("child_process")
+	exec, execSync
+} = require("child_process");
+const { error } = require("console");
+const { stderr, stdout } = require("process");
 
 
 const getConfiguration = () => {
@@ -20,36 +22,23 @@ const needPrompt = () => {
 //该方法将在插件激活的时候调用
 function activate(context) {
 	let disposable = hx.commands.registerCommand('extension.restartIde', () => {
+		 
 		const action = () => {
-			let cmd = ""
-			switch(process.platform) {
-				case "win32":
-					cmd = "taskkill /f /im hbuilderx.exe"
-					break
-				case "linux":
-					cmd = "pkill -15 hbuilderx"
-					break
-				case "darwin":
-					cmd = "pkill -15 hbuilderx"
-					break
-			}
-			// 销毁进程 
-			exec(cmd, (err, stdout, stderr) => {
-				if (err) hx.window.showErrorMessage(err.message)
+			const path = require("path")
+			const appRoot = hx.env.appRoot
+			execSync("chcp 65001")
+			exec("cli app quit", {cwd: appRoot}, (err, stdout, stderr) => {
+				if (err) hx.window.showErrorMessage(err.message) 
 				else {
-					const appRoot = hx.env.appRoot
-					// 重启进程
-					exec(`hbuilderx.exe`, {cwd: appRoot, encoding: "utf8"}, (err, stdout, stderr) => {
-						if(err) { 
-							// const fs =require("fs")
-							// const path = require("path")
-							// fs.writeFileSync(path.resolve(__dirname, ".log"), err.message, {encoding: "utf8"})
-							// 使用了mshta，所以这里只支持了win
-							exec(`mshta vbscript:msgbox("HBuilderX重启失败，请手动启动",48,"提示")(window.close)`)
+					exec("cli open", {cwd: appRoot}, (err, stdout, stderr) => {
+						if (err) hx.window.showErrorMessage(err.message)
+						else {
+							// 用cli在hx调试模式下重启无效的
+							hx.window.showInformationMessage("已重启")
 						}
 					})
 				}
-			})
+			}) 
 		}
 		const _ = needPrompt()
 		if (_) {
