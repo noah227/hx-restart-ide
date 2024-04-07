@@ -1,6 +1,6 @@
 var hx = require("hbuilderx");
 const {
-	exec
+	exec, execSync
 } = require("child_process")
 
 
@@ -17,35 +17,47 @@ const needPrompt = () => {
 	return getConfiguration().get(configKey)
 }
 
+const logError = (message, operation="DEFAULT") => {
+	// 错误日志
+	const fs =require("fs")
+	const path = require("path")
+	fs.appendFileSync(path.resolve(__dirname, ".log"), [new Date().toLocaleString(), operation, message, "\n"].join("\t"), {encoding: "utf8"})
+}
+
 //该方法将在插件激活的时候调用
 function activate(context) {
 	let disposable = hx.commands.registerCommand('extension.restartIde', () => {
 		const action = () => {
-			let cmd = ""
-			switch(process.platform) {
+			let cmd = "", startCmd = ""
+			const platform = process.platform
+			switch(platform) {
 				case "win32":
-					cmd = "taskkill /f /im hbuilderx.exe"
+					cmd = "chcp 65001 & taskkill /f /im hbuilderx.exe"
+					startCmd = "chcp 65001 & hbuilderx.exe"
 					break
 				case "linux":
 					cmd = "pkill -15 hbuilderx"
+					startCmd = "hbuilderx"
 					break
 				case "darwin":
 					cmd = "pkill -15 hbuilderx"
+					startCmd = "hbuilderx"
 					break
 			}
 			// 销毁进程 
 			exec(cmd, (err, stdout, stderr) => {
-				if (err) hx.window.showErrorMessage(err.message)
+				if (err) {
+					hx.window.showErrorMessage(err.message)
+					logError(err.message)
+				}
 				else {
 					const appRoot = hx.env.appRoot
 					// 重启进程
-					exec(`hbuilderx.exe`, {cwd: appRoot, encoding: "utf8"}, (err, stdout, stderr) => {
+					exec(startCmd, {cwd: appRoot, encoding: "utf8"}, (err, stdout, stderr) => {
 						if(err) { 
-							// const fs =require("fs")
-							// const path = require("path")
-							// fs.writeFileSync(path.resolve(__dirname, ".log"), err.message, {encoding: "utf8"})
-							// 使用了mshta，所以这里只支持了win
-							exec(`mshta vbscript:msgbox("HBuilderX重启失败，请手动启动",48,"提示")(window.close)`)
+							logError(err.message)
+							// mshta
+							if(platform === "win32") exec(`mshta vbscript:msgbox("HBuilderX重启失败，请手动启动",48,"提示")(window.close)`)
 						}
 					})
 				}
