@@ -32,8 +32,8 @@ function activate(context) {
 			const platform = process.platform
 			switch(platform) {
 				case "win32":
-					cmd = "chcp 65001 & taskkill /f /im hbuilderx.exe"
-					startCmd = "chcp 65001 & hbuilderx.exe"
+					cmd = "chcp 65001 && taskkill /f /im hbuilderx.exe"
+					startCmd = "chcp 65001 && hbuilderx.exe"
 					break
 				case "linux":
 					cmd = "pkill -15 hbuilderx"
