@@ -1,0 +1,15 @@
+{
+    "name": "hx-restart-ide",
+    "description": "An IDE restart plugin",
+    "displayName": "IDE Restart",
+    "publisher": "Noah Young",
+    "contributes.commands.0.title": "Restart IDE",
+    "contributes.configuration.title": "IDE Restart",
+    "contributes.configuration.properties.noahyoung-hx-restart-ide.promptBeforeRestart.description": "Prompt before restart",
+    "promptTitle": "Attention",
+    "promptText": "Restart IDE?",
+    "button1": "Restart",
+    "button2": "Restart and No More Prompt",
+    "button3": "Cancel",
+    "restartErrorMessage": "Restart failed, please restart manually"
+}

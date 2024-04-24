@@ -1,8 +1,8 @@
 {
 	"id": "noahyoung-hx-restart-ide",
 	"name": "hx-restart-ide",
-	"description": "一款单纯的IDE重启插件",
-	"displayName": "IDE重启",
+	"description": "%description%",
+	"displayName": "%displayName%",
 	"version": "1.0.0",
 	"publisher": "Noah Young",
 	"engines": {
@@ -17,6 +17,7 @@
 	],
 	"main": "./extension",
 	"scripts": {
+		"build:i18n": "node i18n.build.js",
 		"pack": "node hx-pack.js"
 	},
 	"activationEvents": [
@@ -26,7 +27,7 @@
 		"commands": [
 			{
 				"command": "extension.restartIde",
-				"title": "重启IDE"
+				"title": "%contributes.commands.0.title%"
 			}
 		],
 		"menus": {
@@ -38,12 +39,12 @@
 			]
 		},
 		"configuration": {
-			"title": "IDE重启",
+			"title": "%contributes.configuration.title%",
 			"properties": {
 				"noahyoung-hx-restart-ide.promptBeforeRestart": {
 					"type": "boolean",
 					"default": true,
-					"description": "重启前提示"
+					"description": "%contributes.configuration.properties.noahyoung-hx-restart-ide.promptBeforeRestart.description%"
 				}
 			}
 		}
@@ -53,5 +54,8 @@
 	],
 	"devDependencies": {
 		"cozip": "^0.1.0"
+	},
+	"dependencies": {
+		"hx-i18n-helper": "^0.3.3"
 	}
 }

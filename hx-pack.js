@@ -4,7 +4,12 @@ const publishName = `${require("./package.json").name}.zip`
 ;(() => {
     cozip(publishName, [
         ["./extension.js", false],
+        ["./helper.keys.js", false],
+        ["./package.nls.json", false],
+        ["./package.nls.en.json", false],
         ["./package.json", false],
+        ["./node_modules/flat", true],
+        ["./node_modules/hx-i18n-helper", true],
     ], err => {
         if (err) console.error(err)
         else {

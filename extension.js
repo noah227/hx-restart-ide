@@ -2,7 +2,7 @@ var hx = require("hbuilderx");
 const {
 	exec, execSync
 } = require("child_process")
-
+const path = require("path")
 
 const getConfiguration = () => {
 	const pkg = require("./package.json")
@@ -26,6 +26,10 @@ const logError = (message, operation="DEFAULT") => {
 
 //该方法将在插件激活的时候调用
 function activate(context) {
+	const {i18nHelper} = require("hx-i18n-helper")
+	const helper = i18nHelper(path.resolve(__dirname))
+	const helperKeys = require("./helper.keys")
+	
 	let disposable = hx.commands.registerCommand('extension.restartIde', () => {
 		const action = () => {
 			let cmd = "", startCmd = ""
@@ -54,10 +58,12 @@ function activate(context) {
 					const appRoot = hx.env.appRoot
 					// 重启进程
 					exec(startCmd, {cwd: appRoot, encoding: "utf8"}, (err, stdout, stderr) => {
+						const promptTitle = helper.i18nGet(helperKeys.promptTitle)
+						const messageContent = helper.i18nGet(helperKeys.restartErrorMessage)
 						if(err) { 
 							logError(err.message)
 							// mshta
-							if(platform === "win32") exec(`mshta vbscript:msgbox("HBuilderX重启失败，请手动启动",48,"提示")(window.close)`)
+							if(platform === "win32") exec(`mshta vbscript:msgbox("${messageContent}",48,"${promptTitle}")(window.close)`)
 						}
 					})
 				}
@@ -65,15 +71,17 @@ function activate(context) {
 		}
 		const _ = needPrompt()
 		if (_) {
+			const buttons = ["button1", "button2", "button3"].map(k => helper.i18nGet(k))
+			
 			hx.window.showMessageBox({
 				type: 'question',
-				title: '提示',
-				text: '重启IDE？',
-				buttons: ['重启', '重启并不再提示', '取消'],
-				defaultButton: "重启"
+				title: helper.i18nGet(helperKeys.promptTitle),
+				text: helper.i18nGet(helperKeys.promptText),
+				buttons,
+				defaultButton: buttons[0]
 			}).then(button => {
-				if (button === "重启") action()
-				else if(button === "重启并不再提示") {
+				if (button === buttons[0]) action()
+				else if(button === buttons[1]) {
 					getConfiguration().update(configKey, false)
 					action()
 				}

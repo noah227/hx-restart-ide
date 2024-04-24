@@ -1,0 +1,15 @@
+{
+    "name": "hx-restart-ide",
+    "description": "一款单纯的IDE重启插件",
+    "displayName": "IDE重启",
+    "publisher": "Noah Young",
+    "contributes.commands.0.title": "重启IDE",
+    "contributes.configuration.title": "IDE重启",
+    "contributes.configuration.properties.noahyoung-hx-restart-ide.promptBeforeRestart.description": "重启前提示",
+    "promptTitle": "提示",
+    "promptText": "重启IDE？",
+    "button1": "重启",
+    "button2": "重启并不再提示",
+    "button3": "取消",
+    "restartErrorMessage": "HBuilderX重启失败，请手动启动"
+}
