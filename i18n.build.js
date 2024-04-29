@@ -5,6 +5,7 @@ const helper = i18nHelper()
 helper.initLocales(["en"])
 // 此过程会从package.json里提取部分可能存在i18n应用的key进行拍平处理，生成默认的nls文件
 // 如果后续package.json有变动的i18n相关的键，重新调用此函数以更新nls文件内容
+// 第三参数是自定的用在js内的i18n内容，跟pacakge.json关系不大，所以生成时要保留
 helper.generateNls([], true, ["promptTitle","promptText","button1","button2","button3", "restartErrorMessage"])
 
 // 从默认nls文件向其他nls文件同步，同步会跳过已经配置过的内容
