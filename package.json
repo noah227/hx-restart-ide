@@ -53,9 +53,7 @@
 		"plugin-manager"
 	],
 	"devDependencies": {
-		"cozip": "^0.1.0"
-	},
-	"dependencies": {
-		"hx-i18n-helper": "^0.3.3"
+		"cozip": "^0.1.0",
+		"hx-i18n-helper": "^0.3.4"
 	}
 }

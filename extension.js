@@ -38,7 +38,7 @@ function activate(context) {
 		}
 		const _ = needPrompt()
 		if (_) {
-			const buttons = ["button1", "button2", "button3"].map(k => helper.i18nGet(k)) 
+			const buttons = Object.values(helper.i18nGets(["button1", "button2", "button3"]))
 			hx.window.showMessageBox({
 				type: 'question',
 				title: helper.i18nGet(helperKeys.promptTitle),
