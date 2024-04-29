@@ -32,47 +32,13 @@ function activate(context) {
 	
 	let disposable = hx.commands.registerCommand('extension.restartIde', () => {
 		const action = () => {
-			let cmd = "", startCmd = ""
-			const platform = process.platform
-			switch(platform) {
-				case "win32":
-					cmd = "chcp 65001 && taskkill /f /im hbuilderx.exe"
-					startCmd = "chcp 65001 && hbuilderx.exe"
-					break
-				case "linux":
-					cmd = "pkill -15 hbuilderx"
-					startCmd = "hbuilderx"
-					break
-				case "darwin":
-					cmd = "pkill -15 hbuilderx"
-					startCmd = "hbuilderx"
-					break
-			}
-			// 销毁进程 
-			exec(cmd, (err, stdout, stderr) => {
-				if (err) {
-					hx.window.showErrorMessage(err.message)
-					logError(err.message)
-				}
-				else {
-					const appRoot = hx.env.appRoot
-					// 重启进程
-					exec(startCmd, {cwd: appRoot, encoding: "utf8"}, (err, stdout, stderr) => {
-						const promptTitle = helper.i18nGet(helperKeys.promptTitle)
-						const messageContent = helper.i18nGet(helperKeys.restartErrorMessage)
-						if(err) { 
-							logError(err.message)
-							// mshta
-							if(platform === "win32") exec(`mshta vbscript:msgbox("${messageContent}",48,"${promptTitle}")(window.close)`)
-						}
-					})
-				}
-			})
+			const appRoot = hx.env.appRoot
+			execSync("cli app quit", {cwd: appRoot, encoding: "utf8"})
+            execSync("cli open", {cwd: appRoot, encoding: "utf8"})
 		}
 		const _ = needPrompt()
 		if (_) {
-			const buttons = ["button1", "button2", "button3"].map(k => helper.i18nGet(k))
-			
+			const buttons = ["button1", "button2", "button3"].map(k => helper.i18nGet(k)) 
 			hx.window.showMessageBox({
 				type: 'question',
 				title: helper.i18nGet(helperKeys.promptTitle),
