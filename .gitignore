@@ -5,7 +5,6 @@ package-lock.json
 *.zip
 test.js
 helper.keys.js
-package.nls.*.json
 
 # local env files
 .env.local
