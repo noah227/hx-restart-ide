@@ -39,7 +39,7 @@ const logMessage = (message, operation="DEFAULT") => {
 }
 
 const tryDelay = getConfigurationNumberItem("restartTryDelay", 120, v => {
-	if(v < 1000) v = 1000
+	if(v < 100) v = 100
 	return v
 })
 
