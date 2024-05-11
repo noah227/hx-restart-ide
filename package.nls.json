@@ -6,6 +6,8 @@
     "contributes.commands.0.title": "重启IDE",
     "contributes.configuration.title": "IDE重启",
     "contributes.configuration.properties.noahyoung-hx-restart-ide.promptBeforeRestart.description": "重启前提示",
+    "contributes.configuration.properties.noahyoung-hx-restart-ide.restartMaxTries.description": "最大尝试启动次数",
+    "contributes.configuration.properties.noahyoung-hx-restart-ide.restartTryDelay.description": "启动重试间隔（毫秒，默认120）",
     "promptTitle": "提示",
     "promptText": "重启IDE？",
     "button1": "重启",

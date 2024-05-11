@@ -6,6 +6,8 @@
     "contributes.commands.0.title": "Restart IDE",
     "contributes.configuration.title": "IDE Restart",
     "contributes.configuration.properties.noahyoung-hx-restart-ide.promptBeforeRestart.description": "Prompt before restart",
+    "contributes.configuration.properties.noahyoung-hx-restart-ide.restartMaxTries.description": "Max restart tries",
+    "contributes.configuration.properties.noahyoung-hx-restart-ide.restartTryDelay.description": "Restart try interval (ms, 120 as default)",
     "promptTitle": "Attention",
     "promptText": "Restart IDE?",
     "button1": "Restart",
