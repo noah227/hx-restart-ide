@@ -3,7 +3,7 @@
 	"name": "hx-restart-ide",
 	"description": "%description%",
 	"displayName": "%displayName%",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"publisher": "Noah Young",
 	"engines": {
 		"HBuilderX": "^2.7.0"
@@ -45,6 +45,16 @@
 					"type": "boolean",
 					"default": true,
 					"description": "%contributes.configuration.properties.noahyoung-hx-restart-ide.promptBeforeRestart.description%"
+				},
+				"noahyoung-hx-restart-ide.restartMaxTries": {
+					"type": "number",
+					"default": 10,
+					"description": "最大尝试启动次数（最大30）"
+				},
+				"noahyoung-hx-restart-ide.restartTryDelay": {
+					"type": "number",
+					"default": 120,
+					"description": "启动重试间隔（毫秒，默认120）"
 				}
 			}
 		}
