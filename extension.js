@@ -84,7 +84,7 @@ const clearCli = () => {
 } 
 
 //该方法将在插件激活的时候调用
-function activate(context) {process.ki
+function activate(context) {
 	const {i18nHelper} = require("hx-i18n-helper")
 	const helper = i18nHelper(path.resolve(__dirname))
 	const helperKeys = require("./helper.keys")
