@@ -51,10 +51,20 @@
 					"default": 10,
 					"description": "最大尝试启动次数（最大30）"
 				},
+				"noahyoung-hx-restart-ide.restartDelay": {
+					"type": "number",
+					"default": 100,
+					"description": "启动延迟（毫秒，100-1000，默认100，一般保持默认即可，如果出现重启失败的情况，可以考虑稍微调大一点）"
+				},
 				"noahyoung-hx-restart-ide.restartTryDelay": {
 					"type": "number",
 					"default": 120,
 					"description": "启动重试间隔（毫秒，默认120）"
+				},
+				"noahyoung-hx-restart-ide.qOutputLog": {
+					"type": "boolean",
+					"default": false,
+					"description": "输出日志"
 				}
 			}
 		}

@@ -3,25 +3,9 @@ const {
 	exec, execSync
 } = require("child_process")
 const path = require("path")
-
-const getConfiguration = () => {
-	const pkg = require("./package.json")
-	return hx.workspace.getConfiguration(pkg.id)
-}
-
-/**
- * @param {string} key
- * @param {any} defaultValue
- * @param {(v: any) => any} extraHandler 对结果进行额外的处理
- */
-const getConfigurationNumberItem = (key, defaultValue, extraHandler) => {
-	let v = getConfiguration().get(key)
-	if(typeof v !== "number") {
-		v = parseInt(v)
-		v = isNaN(v) ? defaultValue : v
-	}
-	return extraHandler ? extraHandler(v) : v
-}
+const {
+	getConfiguration, getConfigurationNumberItem, logMessage, getTaskList
+} = require("./extension.utils.js")
 
 const configKey = "promptBeforeRestart"
 /**
@@ -31,30 +15,19 @@ const needPrompt = () => {
 	return getConfiguration().get(configKey)
 }
 
-const logMessage = (message, operation="DEFAULT") => {
-	// 错误日志
-	const fs =require("fs")
-	const path = require("path")
-	fs.appendFileSync(path.resolve(__dirname, ".log"), [new Date().toLocaleString(), operation, message, "\n"].join("\t"), {encoding: "utf8"})
-}
-
 const tryDelay = getConfigurationNumberItem("restartTryDelay", 120, v => {
-	if(v < 100) v = 100
+	if(v < 100) v = 100 
 	return v
 })
 
 /**
- * @returns {[string, number][]}
+ * 获取当前HBuilderX的进程id
  */
-const getTaskList = () => {
-	const cmd = process.platform === "win32" ? "tasklist" : "ps aux"
-	return execSync(cmd, {encoding: "utf8"}).split("\n").map(line => {
-		lineSplit = line.trim().split(/\s+/)
-		const pname = lineSplit[0]
-		const pid = parseInt(lineSplit[1])
-		return [pname, pid]
-	})
+const getAppId = () => {
+	const matchTask = getTaskList().find(([pname, pid]) => pname.toLowerCase().startsWith("hbuilderx"))
+	return matchTask ? matchTask[1] : null
 }
+
 /**
  * 检测HBuilderX是否已经正常启动了
  */
@@ -65,18 +38,26 @@ const getIfAppInstance = () => {
 /**
  * 多启动几次，你总能起来了吧
  */
-const startIDE = (cwd, startCount) => {
+const startIDE = (appId, cwd, startCount) => {
     if(startCount <= 0) return
-	if(getIfAppInstance()) return logMessage(`HBuilderX已正常启动，重试结束[${startCount}]`)
+	if(getIfAppInstance()) {
+		const _appId = getAppId()
+		if(_appId && _appId !== appId) {
+			return logMessage(`HBuilderX已正常启动[PID: ${_appId}]，重试结束[${startCount}]`)
+		}
+	}
 	logMessage(`启动中：${startCount}`)
-    exec("cli open", {cwd, encoding: "utf8"})        
+    execSync("cli open", {cwd, encoding: "utf8"})        
     // 100ms执行一次
     setTimeout(() => {
-        startIDE(cwd, startCount - 1)
+        startIDE(appId, cwd, startCount - 1)
     }, tryDelay);
 }
 
-// 杀掉残留的cli进程
+/**
+ * 杀掉残留的cli进程
+ * todo 这是一个不严谨的判断
+ */
 const clearCli = () => {
 	getTaskList().forEach(([pname, pid]) => {
 		if(pname.startsWith("cli")) process.kill(pid)
@@ -92,15 +73,24 @@ function activate(context) {
 	let disposable = hx.commands.registerCommand('extension.restartIde', () => {
 		const action = () => { 
 			const appRoot = hx.env.appRoot
+			const appId = getAppId()
+			logMessage(`当前进程id：${getAppId()}`)
 			execSync("cli app quit", {cwd: appRoot, encoding: "utf8"})
 			// 销毁可能异常存在的cli进程
-			clearCli()
-			const maxTries = getConfigurationNumberItem("restartMaxTries", 10, v => {
-				if(v <= 0) v = 10
-				else if(v > 30) v = 30
+			// clearCli()
+			const restartDelay = getConfigurationNumberItem("restartDelay", 100, v => {
+				if(v < 30) v = 30
+				else if(v > 1000) v = 1000
 				return v
-			}) 
-			startIDE(appRoot, maxTries)
+			})
+			setTimeout(() => {
+				const maxTries = getConfigurationNumberItem("restartMaxTries", 10, v => {
+					if(v <= 0) v = 10
+					else if(v > 30) v = 30
+					return v
+				}) 
+				startIDE(appId, appRoot, maxTries)
+			}, restartDelay)
 		}
 		const _ = needPrompt()
 		if (_) {

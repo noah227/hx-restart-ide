@@ -4,6 +4,7 @@ const publishName = `${require("./package.json").name}.zip`
 ;(() => {
     cozip(publishName, [
         ["./extension.js", false],
+        ["./extension.utils.js", false],
         ["./helper.keys.js", false],
         ["./package.nls.json", false],
         ["./package.nls.en.json", false],
