@@ -11,7 +11,7 @@ const getConfiguration = () => {
 
 /**
  * @param {string} key
- * @param {any} defaultValue
+ * @param {any} defaultValue 非get函数的defaultValue，而是处理数值异常时的默认值
  * @param {(v: any) => any} extraHandler 对结果进行额外的处理
  */
 const getConfigurationNumberItem = (key, defaultValue, extraHandler) => {
