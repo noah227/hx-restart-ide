@@ -104,8 +104,9 @@ function activate(context) {
 			}).then(button => {
 				if (button === buttons[0]) action()
 				else if(button === buttons[1]) {
-					getConfiguration().update(configKey, false)
-					action()
+					getConfiguration().update(configKey, false).then(() => {
+						action()
+					})
 				}
 				else {}
 			})
