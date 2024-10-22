@@ -8,7 +8,7 @@
 
 重启前的提示可以在`工具 > 设置 > 插件配置 > IDE重启`进行勾选配置，**插件安装时默认勾选**
 
-![](https://mp-77dc03ae-7084-429e-8b0f-4d540ae4a430.cdn.bspapp.com/images/hx-restart-ide-2.jpg)
+![](https://mp-77dc03ae-7084-429e-8b0f-4d540ae4a430.cdn.bspapp.com/images/hx-restart-ide-2.png)
 
 ## 关于平台
 
