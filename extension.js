@@ -20,24 +20,15 @@ const needPrompt = () => {
 const commandMap = {
 	"win32": {
 		kill: "taskkill /f /im hbuilderx.exe",
-		start: "",
-		showError(message, title) {
-			`mshta vbscript:msgbox("${message}",48,"${title}")(window.close)`
-		}
+		start: ""
 	},
 	"linux": {
 		kill: "pkill -15 hbuilderx",
-		start: "",
-		showError(message, title) {
-			`zenity --warning --text="${message}"`
-		}
+		start: ""
 	},
 	"darwin": {
 		kill: "pkill -15 hbuilderx",
-		start: "",
-		showError(message, title) {
-			`zenity --warning --text="${message}"`
-		}
+		start: ""
 	}
 }
 
@@ -57,7 +48,7 @@ function activate(context) {
 						cwd: appRoot,
 						encoding: "utf8"
 					}, (err, stdout, stderr) => {
-						if (err) cmd.showError("HBuilderX重启失败，请手动启动", "提示")
+						if (err) require("dialog").err("HBuilderX重启失败，请手动启动", "提示") 
 					})
 				}
 			})

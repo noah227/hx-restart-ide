@@ -4,6 +4,7 @@ const publishName = `${require("./package.json").name}.zip`
 ;(() => {
     cozip(publishName, [
         ["./extension.js", false],
+        ["./node_modules/dialog", true],
         ["./package.json", false],
     ], err => {
         if (err) console.error(err)

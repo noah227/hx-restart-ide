@@ -53,5 +53,8 @@
 	],
 	"devDependencies": {
 		"cozip": "^0.1.0"
+	},
+	"dependencies": {
+		"dialog": "^0.3.1"
 	}
 }
