@@ -13,40 +13,51 @@ const configKey = "promptBeforeRestart"
 /**
  * 检测是否需要在重启前提示
  */
-const needPrompt = () => { 
+const needPrompt = () => {
 	return getConfiguration().get(configKey)
+}
+
+const commandMap = {
+	"win32": {
+		kill: "taskkill /f /im hbuilderx.exe",
+		start: "",
+		showError(message, title) {
+			`mshta vbscript:msgbox("${message}",48,"${title}")(window.close)`
+		}
+	},
+	"linux": {
+		kill: "pkill -15 hbuilderx",
+		start: "",
+		showError(message, title) {
+			`zenity --warning --text="${message}"`
+		}
+	},
+	"darwin": {
+		kill: "pkill -15 hbuilderx",
+		start: "",
+		showError(message, title) {
+			`zenity --warning --text="${message}"`
+		}
+	}
 }
 
 //该方法将在插件激活的时候调用
 function activate(context) {
 	let disposable = hx.commands.registerCommand('extension.restartIde', () => {
 		const action = () => {
-			let cmd = ""
-			switch(process.platform) {
-				case "win32":
-					cmd = "taskkill /f /im hbuilderx.exe"
-					break
-				case "linux":
-					cmd = "pkill -15 hbuilderx"
-					break
-				case "darwin":
-					cmd = "pkill -15 hbuilderx"
-					break
-			}
+			const cmd = commandMap[process.platform]
+			if (!cmd) return hx.window.showErrorMessage(`插件不支持本平台！【${process.platform}】`)
 			// 销毁进程 
-			exec(cmd, (err, stdout, stderr) => {
+			exec(cmd.kill, (err, stdout, stderr) => {
 				if (err) hx.window.showErrorMessage(err.message)
 				else {
 					const appRoot = hx.env.appRoot
 					// 重启进程
-					exec(`hbuilderx.exe`, {cwd: appRoot, encoding: "utf8"}, (err, stdout, stderr) => {
-						if(err) { 
-							// const fs =require("fs")
-							// const path = require("path")
-							// fs.writeFileSync(path.resolve(__dirname, ".log"), err.message, {encoding: "utf8"})
-							// 使用了mshta，所以这里只支持了win
-							exec(`mshta vbscript:msgbox("HBuilderX重启失败，请手动启动",48,"提示")(window.close)`)
-						}
+					exec(`hbuilderx.exe`, {
+						cwd: appRoot,
+						encoding: "utf8"
+					}, (err, stdout, stderr) => {
+						if (err) cmd.showError("HBuilderX重启失败，请手动启动", "提示")
 					})
 				}
 			})
@@ -61,11 +72,11 @@ function activate(context) {
 				defaultButton: "重启"
 			}).then(button => {
 				if (button === "重启") action()
-				else if(button === "重启并不再提示") {
-					getConfiguration().update(configKey, false)
-					action()
-				}
-				else {}
+				else if (button === "重启并不再提示") {
+					getConfiguration().update(configKey, false).then(() => {
+						action()
+					})
+				} else {}
 			})
 		} else action()
 	});
